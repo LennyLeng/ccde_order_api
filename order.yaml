@@ -1,0 +1,227 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: CCDE ORDER API
+  description: 中国石油川庆钻探工单系统API
+  version: "1.0.0"
+# the domain of the service
+host: api.order.ccde.cnpc
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths: 
+  /orders/{id} :
+    get:
+      summary: 通过工单号获取某一个工单
+      parameters:
+        - name: id
+          in: path
+          description: 工单号
+          required: true
+          type: number
+          format: integer
+      tags:
+        - order
+      responses:
+        200:
+          description: 工单详情
+          schema:
+            $ref: '#/definitions/order'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    put:
+      summary: 修改一个工单
+      parameters:
+        - name: id
+          in: path
+          description: 工单号
+          required: true
+          type: number
+          format: integer
+      tags:
+        - order
+      responses:
+        200:
+          description: 工单详情
+          schema:
+            $ref: '#/definitions/order'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+
+  /orders :
+    get:
+      summary: 获取工单列表
+      parameters:
+        - name: begin_range
+          in: query
+          description: 开始时间
+          required: false
+          type: string
+          format: date-time
+        - name: end_range
+          in: query
+          description: 开始时间
+          required: false
+          type: string
+          format: date-time
+      tags:
+        - order
+      responses:
+        200:
+          description: 工单列表
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/order'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+    post:
+      summary: 生成一个工单
+      parameters:
+        - name: data
+          in: body
+          description: 工单号
+          required: true
+          schema: 
+            $ref: '#/definitions/order'
+      tags:
+        - order
+      responses:
+        200:
+          description: 工单详情
+          schema:
+            $ref: '#/definitions/order'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+  
+  /orders/analysis :
+    get:
+      summary: 获取工单列表分析
+      parameters:
+        - name: begin_range
+          in: query
+          description: 开始时间
+          required: false
+          type: string
+          format: date-time
+        - name: end_range
+          in: query
+          description: 开始时间
+          required: false
+          type: string
+          format: date-time
+      tags:
+        - order
+      responses:
+        200:
+          description: 工单列表分析
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/analysis'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/error'
+definitions:
+  order:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: 工单号
+      proposer_name:
+        type: string
+        description: 申请人姓名
+      proposer_work_phone:
+        type: string
+        description: 申请人工作电话
+      proposer_private_phone:
+        type: string
+        description: 申请人私人电话
+      proposer_vdi_login_name:
+        type: string
+        description: 申请人云桌面帐号
+      proposer_mail_login_name:
+        type: string
+        description: 申请人邮箱帐号
+      proposer_department:
+        type: string
+        description: 申请人部门
+      proposer_post:
+        type: string
+        description: 申请人职位
+      proposer_room_num:
+        type: string
+        description: 申请人办公室房号
+      service_type:
+        type: string
+        description: 服务类型
+      order_type: 
+        type: string
+        description: 工单类型
+      order_content:
+        type: string
+        description: 工单内容
+      recv_unit:
+        type: string
+        description: 工单受理单位
+      recv_operator_name:
+        type: string
+        description: 工单受理人
+      begin_time: 
+        type: string
+        format: dateTime
+        description: 开始时间
+      end_time:
+        type: string
+        format: dateTime
+        description: 结束时间
+      deal_content:
+        type: string
+        description: 处理记录
+      cost_time:
+        type: integer
+        description: 花销时间
+  analysis:
+    type: object
+    properties:
+      max_cost_time:
+        type: integer
+        description: 消耗时间最长秒数
+      min_cost_time:
+        type: integer
+        description: 消耗时间最短秒数
+      avg_cost_time:
+        type: integer
+        description: 消耗时间平均秒数
+      mid_cost_time:
+        type: integer
+        description: 消耗时间中位秒数
+      cp_cost_time:
+        type: integer
+        description: 消耗时间CP值
+      cpk_cost_time:
+        type: integer
+        description: 消耗时间CPK值
+  error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
