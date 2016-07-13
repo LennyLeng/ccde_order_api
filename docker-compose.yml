@@ -1,0 +1,22 @@
+ccde_order_db:
+    image: "lennyleng/ccde_order_db"
+    expose:
+        - "5432"
+    ports:
+      - "5432:5432"
+    environment:
+        - POSTGRES_PASSWORD=Order.ccde.cnpc
+        - POSTGRES_DB=ccde_order_db
+
+ccde_order_api:
+    image: "lennyleng/ccde_order_api"
+    ports:
+      - "80:80"
+    links:
+      - ccde_order_db:ccde_order_db
+    environment:
+      - DB_HOST=ccde_order_db
+      - DB_LOGIN_NAME=postgres
+      - DB_LOGIN_PASS=Order.ccde.cnpc
+      - DB_NAME=ccde_order_db
+      - CPK_TOPLIMIT_SEC=7200
