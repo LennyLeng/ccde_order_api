@@ -73,12 +73,17 @@ class analysis(Resource):
             db = pgdb.postgres_driver()
             begin_range = request.args.get('begin_range', '0001-01-01 00:00:00')
             end_range = request.args.get('end_range', '9999-12-31 00:00:00')
+
+
+            data = db.read("SELECT COUNT(*) AS order_count FROM orders WHERE begin_time >= %s AND begin_time <= %s", (begin_range, end_range))
+            order_count = data[0]['order_count']
             data = db.read("SELECT EXTRACT(epoch FROM cost_time) AS cost_time FROM orders WHERE begin_time >= %s AND begin_time <= %s", (begin_range, end_range))
             val_data = []
             for item in data:
                 val_data.append(item['cost_time'])
 
             data = {}
+            data['order_count'] = order_count
             data['max_cost_time'] = max(val_data)
             data['min_cost_time'] =  min(val_data)
             data['avg_cost_time'] = sum(val_data) / len(val_data)
